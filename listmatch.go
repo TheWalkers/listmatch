@@ -9,10 +9,9 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
-	"encoding/binary"
-	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -137,8 +136,7 @@ func matchMain(inName, urlString, saltStr string) {
 	}
 
 	// reopen CSV and print matching rows
-	// RF: rewrite this to a read loop (or ReadAll + loop)
-	masks, err := readUint64s(resp.Body)
+	masks, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalln("Error receiving matches from server:", err)
 	}
@@ -153,7 +151,7 @@ func matchMain(inName, urlString, saltStr string) {
 	fmt.Fprintln(matchesOut, s.Text()) // copy header row
 	matches := 0
 	for _, mask := range masks {
-		for i := 63; i >= 0; i-- {
+		for i := 7; i >= 0; i-- {
 			if !s.Scan() { // err or EOF
 				if s.Err() != nil {
 					log.Fatalln("error reading CSV:", s.Err())
@@ -278,26 +276,4 @@ func base64string(b []byte) string {
 	encoder.Write(b)
 	encoder.Close()
 	return buf.String()
-}
-
-const maxHashes = 1e8
-
-var errTooManyHashes = errors.New("too many hashes")
-
-//RF: get rid of this by reading bytes
-func readUint64s(r io.Reader) (result []uint64, err error) {
-	for {
-		var u uint64
-		err = binary.Read(r, binary.BigEndian, &u)
-		if err != nil {
-			if err == io.EOF {
-				return result, nil
-			}
-			return result, err
-		}
-		result = append(result, u)
-		if len(result) > maxHashes {
-			return nil, errTooManyHashes
-		}
-	}
 }

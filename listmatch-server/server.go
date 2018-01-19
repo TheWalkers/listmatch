@@ -76,13 +76,11 @@ func findHash(needle uint64, haystack []uint64) bool {
 }
 
 // Makes a mask saying which values in needles have a match in haystack.
-func findHashes(needles []uint64, haystack []uint64) (out []uint64) {
+func findHashes(needles []uint64, haystack []uint64) (out []byte) {
+	out = make([]byte, 0, (len(needles)+7)/8)
 	for i := 0; i < len(needles); {
-		var mask uint64
-		// Using big-endian order and setting top bits first means a
-		// client with <64-bit ints (think JS) doesn't have to do
-		// anything special to read the stream.
-		for j := 63; i < len(needles) && j >= 0; i, j = i+1, j-1 {
+		var mask byte
+		for j := 7; i < len(needles) && j >= 0; i, j = i+1, j-1 {
 			if findHash(needles[i], haystack) {
 				mask |= 1 << uint(j)
 			}
@@ -248,11 +246,10 @@ func handleMatch(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 	uploadLock.Unlock()
-	// RF: replace this with a ByteWriter loop
 	masks := findHashes(matches, upload)
 
 	rw.WriteHeader(200)
-	_ = writeUint64s(masks, rw)
+	_, _ = rw.Write(masks)
 }
 
 func handleBrowser(rw http.ResponseWriter, r *http.Request) {
@@ -285,14 +282,4 @@ func readUint64s(r io.Reader) (result []uint64, err error) {
 			return nil, errTooManyHashes
 		}
 	}
-}
-
-func writeUint64s(vals []uint64, w io.Writer) (err error) {
-	for _, v := range vals {
-		err := binary.Write(w, binary.BigEndian, v)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
 }

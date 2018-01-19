@@ -1,0 +1,5 @@
+This is work-in-progress on a tool to let two parties safely match two lists containing private info like email addresses with the aid of a third-party server. The core idea is for the server to blindly compare hashes generated using a key (internally called a "salt" for now) that only the two clients share; without the key, the server can't try random guesses of email addresses that may be on the lists or otherwise recover info about the raw data.
+
+The initial commit is a proof-of-concept client and server in Go that's not especially practical to use. The biggest reason not to use it is the server keeps all hashes only in RAM, which scales terribly and means you can't restart it. The plan is, in addition to redesigning things to be more production-ready, to add a client that runs within a browser as an option for convenience, and to add text explaining the motivation, design, and security goals and non-goals. When things are more usable, we'll put an appropriate open source license on it and send it to potentially interested folks.
+
+Copyright 2018 We Also Walk Dogs.

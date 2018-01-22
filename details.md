@@ -8,7 +8,7 @@ How's it work?
 
 Say two organizations, client 1 and client 2, want to know the overlap between their email lists. Here's how they match lists with a neutral server's help.
 
-1. Client 1 picks a random key. They hash each of their email addresses together and send the hashes to the server. It does *not* send the server the key.
+1. Client 1 picks a random key. They hash each of their email addresses with that key and send the hashes to the server. It does *not* send the server the key.
 2. Client 2 gets the key from client 1, hashes their email addresses with the same key, and sends the hashes to the server.
 3. The server compares the hashes. Now, for each file it has information like "the 1st, 3rd, and 5th hashes had matches in the other file". 
 4. The clients go back to the server download that info.

@@ -95,7 +95,7 @@ _Why truncate hashes to 64 bits?_ It's the 256-bit key, not the output length, t
 
 Shortening the values improves performance and simplicity: uploading even 64 bits is slower than hashing on some CPU/connection combinations, so we'd rather not quadruple the amount we need to upload. Shrinking the upload also helps the server fit entire lists in memory for efficient matching, even on a small cloud instance. Finally, it simplifies the server's code to use hashes small enough to fit in a built-in data type, and simpler code is easier to review or make an independent implementation of.
 
-_Why use binary?_ Similar to why we truncate to 64 bits: when upload speed can be the bottleneck, representing the hashes compactly as compactly as possible is good. It might be a little less familiar than dealing in text in, say, JavaScript, but it's well supported by modern engines.
+_Why use binary?_ Similar to why we truncate to 64 bits: when upload speed can be the bottleneck, representing the hashes as compactly as possible is good. It might be a little less familiar than dealing in text in, say, JavaScript, but it's well supported by modern engines.
 
 _Why use SHA-256?_ For this use case, SHA-256 is probably even overkill: all we need from a hash function is that there be no faster way to 'work backwards' from a hash to the input than just guessing possible inputs (including key). That's preimage resistance, which is much less strict than collision-resistance. Something like SipHash might be sufficient for our needs, but we're using SHA-256 because it's more than strong enough, well known, and fast enough that hashing isn't necessarily the bottleneck, including in JavaScript. 
 

@@ -76,7 +76,7 @@ One helpful thing about listmatch's web client in particular is that it does the
 
 If you're a programmer, it's a relatively simple thing to reassure yourself the command-line client does what it says: you can check out the source, review it, and compile it yourself.
 
-For perspective, though: this isn't an issue specific to listmatch; there is a lot of software we trust with important data. And the older procedure it replaces (exchanging hashes) makes it easy for anyone who obtains the data to reconstruct your list _even when everything goes well_, not only in worst-case scenarios where they've sabotaged webpages or such. And the most important defense is just to 
+For perspective, though: this isn't an issue specific to listmatch; there is a lot of software we trust with important data. And the older procedure it replaces (exchanging hashes) makes it easy for anyone who obtains the data to reconstruct your list _even when everything goes well_, not only in worst-case scenarios where an attacker has created sabotaged versions of webpages or such. And the most important defense is just to use a securely hosted page at a site you trust, something that's good practice any time.
 
 Practically speaking, I think the choice is simple for most. 
 
